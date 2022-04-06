@@ -43,7 +43,8 @@ jobs:
       - name: Version Compatible Test
         run: |
           tests=(
-              "format:jfs_old, mount:jfs_old, write_file1_20M:jfs_old, umount:jfs_old, format:jfs_new, mount:jfs_new, read_file1:jfs_new, umount:jfs_new, destroy:jfs_new"
+              "format:jfs_old, mount:jfs_old, write_file1_20M:jfs_old, umount:jfs_old, dump_backup1:jfs_old, destroy:jfs_old, load_backup1:jfs_new, mount:jfs_new, read_file1:jfs_new, umount:jfs_new, destroy:jfs_new ",
+              "format:jfs_old, mount:jfs_old, write_file1_20M:jfs_old, umount:jfs_old, format:jfs_new, mount:jfs_new, read_file1:jfs_new, umount:jfs_new, destroy:jfs_new",
               "format:jfs_old, format:jfs_new,  destroy:jfs_old",
           )    
           urls=($(curl -s https://api.github.com/repos/juicedata/juicefs/releases | grep browser_download_url | grep linux-amd64.tar.gz | awk -F\" '{print $4}' | head -5) )  
@@ -103,6 +104,15 @@ jobs:
                             fi
                             echo "read finished"
                             ;;
+                        "dump")
+                            filename=$(echo $command | awk -F: '{print $1}'| xargs | awk -F_ '{print $2}')
+                            sudo ./$jfs_bin dump ${{ steps.vars.outputs.META_URL }} $filename
+                            echo "dump finished"
+                        "load")
+                            filename=$(echo $command | awk -F: '{print $1}'| xargs | awk -F_ '{print $2}')
+                            sudo ./$jfs_bin load ${{ steps.vars.outputs.META_URL }} $filename
+                            echo "load finished"
+
                       esac
                   done
               done
