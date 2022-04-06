@@ -108,11 +108,12 @@ jobs:
                             filename=$(echo $command | awk -F: '{print $1}'| xargs | awk -F_ '{print $2}')
                             sudo ./$jfs_bin dump ${{ steps.vars.outputs.META_URL }} $filename
                             echo "dump finished"
+                            ;;
                         "load")
                             filename=$(echo $command | awk -F: '{print $1}'| xargs | awk -F_ '{print $2}')
                             sudo ./$jfs_bin load ${{ steps.vars.outputs.META_URL }} $filename
                             echo "load finished"
-
+                            ;;
                       esac
                   done
               done
